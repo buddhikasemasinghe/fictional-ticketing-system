@@ -20,7 +20,8 @@
   "devDependencies": {
     "chai": "^4.3.7",
     "mocha": "^10.2.0",
-    "sinon": "^15.2.0"
+    "sinon": "^15.2.0",
+    "unique-names-generator": "^4.7.1"
   },
   "dependencies": {
     "uuid": "^9.0.0"

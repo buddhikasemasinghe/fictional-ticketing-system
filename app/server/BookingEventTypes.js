@@ -1,5 +1,5 @@
 const BookingEvents = {
-    ACCEPTED : 'BOOKING_ACCEPTED'
+    ACCEPTED: 'BOOKING_ACCEPTED'
 }
 
 module.exports = BookingEvents;
