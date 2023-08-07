@@ -2,6 +2,7 @@ const {it} = require('mocha');
 const TicketingSystem = require('./TicketingSystem');
 const expect = require('chai').expect;
 const sinon = require('sinon');
+const BookingEvents = require('./BookingEventTypes')
 
 describe('Ticketing System module', () => {
 
@@ -15,11 +16,11 @@ describe('Ticketing System module', () => {
         expect(ticketingSystem.maxCapacity).eq(100);
     });
 
-    it('should create booking with time', () => {
+    it('should create booking with time', (done) => {
         const ticketingSystem = new TicketingSystem(20);
 
         const bookingEvent = sinon.spy();
-        ticketingSystem.on('BOOKING_ACCEPTED', bookingEvent);
+        ticketingSystem.on(BookingEvents.ACCEPTED, bookingEvent);
 
         const booking = {
             name: "Skyler Semasinghe",
@@ -28,9 +29,11 @@ describe('Ticketing System module', () => {
         ticketingSystem.createBooking(booking);
 
         setTimeout(() => {
-            bookingEvent.callCount.should.eq(1);
+            expect(bookingEvent.callCount).eq(1);
+            expect(bookingEvent.bookingId).not.eq(null);
+            expect(bookingEvent.bookingCreateTime).not.eq(null);
+            done();
         }, 10);
-
 
     });
 
