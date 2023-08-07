@@ -52,6 +52,9 @@ describe('Ticketing System module', () => {
         const bookingEvent = sinon.spy();
         ticketingSystem.on(BookingEvents.ACCEPTED, bookingEvent);
 
+        const maxBookingNotification = sinon.spy();
+        ticketingSystem.on(BookingEvents.MAX_BOOKING, maxBookingNotification);
+
         const countryConfig = {
             dictionaries: [countries]
         }
@@ -81,9 +84,12 @@ describe('Ticketing System module', () => {
 
 
         setTimeout(() => {
-            expect(bookingEvent.callCount).eq(1);
+            expect(bookingEvent.callCount).eq(3);
             expect(bookingEvent.bookingId).not.eq(null);
             expect(bookingEvent.bookingCreateTime).not.eq(null);
+
+            expect(maxBookingNotification.callCount).eq(1);
+            expect(bookingEvent.name).not.eq(null);
             done();
         }, 10);
     });
