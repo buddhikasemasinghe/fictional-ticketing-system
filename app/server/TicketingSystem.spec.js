@@ -177,4 +177,44 @@ describe('Ticketing System module', () => {
 
     });
 
+    it('should be able to change the processing frequency in runtime', (done)=> {
+        ticketingSystem = new TicketingSystem(10, 50);
+
+        for (let key of Array(10).keys()) {
+            const booking = {
+                name: uniqueNamesGenerator(configName),
+                destination: uniqueNamesGenerator(countryConfig)
+            };
+
+            ticketingSystem.createBooking(booking);
+        }
+
+        expect(ticketingSystem.getUnProcessedBookings(), 10);
+
+        const reservationEvent = sinon.spy();
+        ticketingSystem.on(BookingEvents.RESERVATION_COMPLETED, reservationEvent);
+
+        setTimeout(() => {
+            expect(ticketingSystem.getUnProcessedBookings(), 7);
+            expect(reservationEvent.callCount).eq(3);
+        }, 151);
+
+        setTimeout(() => {
+            ticketingSystem.changeFrequency(30);
+        }, 160);
+
+        setTimeout(() => {
+            expect(ticketingSystem.getUnProcessedBookings(), 4);
+            expect(reservationEvent.callCount).eq(6);
+        }, 260);
+
+        setTimeout(() => {
+            expect(ticketingSystem.getUnProcessedBookings(), 0);
+            expect(reservationEvent.callCount).eq(10);
+            ticketingSystem.pauseReservation();
+            done();
+        }, 400);
+
+    });
+
 });
