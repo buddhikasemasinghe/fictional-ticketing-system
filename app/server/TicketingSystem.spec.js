@@ -107,8 +107,10 @@ describe('Ticketing System module', () => {
 
         setTimeout(() => {
             expect(reservationEvent.callCount).eq(1);
-            expect(reservationEvent.reservedTime).not.eq(undefined);
-            expect(reservationEvent.name).eq('John Lenon');
+            const reservationResult = reservationEvent.getCall(0).args[0];
+            expect(reservationResult.reservedTime).not.eq(undefined);
+            expect(reservationResult.name).eq('John Lenon');
+            expect(reservationResult.reservationNo).not.eq(undefined);
             done();
         }, 350);
 

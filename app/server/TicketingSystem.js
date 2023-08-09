@@ -3,10 +3,19 @@ const {v4: uuidv4} = require('uuid')
 const BookingEvents = require('./BookingEventTypes')
 
 class TicketingSystem extends EventEmitter {
-    constructor(capacity) {
+    constructor(capacity, reservationFrequency) {
         super();
         this.maxCapacity = capacity || 10;
+        this.frequency = reservationFrequency || 250;
         this.bookingQueue = [];
+
+        setInterval(() => {
+            const bookingToProcess = this.bookingQueue.pop();
+            if(bookingToProcess !== undefined){
+                const reservedBooking = {...bookingToProcess, reservationNo: uuidv4(), reservedTime: Date.now()}
+                this.emit(BookingEvents.RESERVATION_COMPLETED, reservedBooking);
+            }
+        }, this.frequency);
     }
 
     createBooking(booking) {
@@ -18,6 +27,8 @@ class TicketingSystem extends EventEmitter {
         this.bookingQueue.push(bookingToProcess);
         this.emit(BookingEvents.ACCEPTED, bookingToProcess);
     }
+
+
 }
 
 module.exports = TicketingSystem;
