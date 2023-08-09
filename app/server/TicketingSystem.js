@@ -38,6 +38,12 @@ class TicketingSystem extends EventEmitter {
     getUnProcessedBookings() {
         return this.bookingQueue.length;
     }
+
+    changeFrequency(newFrequency) {
+        this.pauseReservation();
+        this.frequency = newFrequency;
+        this.reservationProcess = setInterval(this._startReservation.bind(this), this.frequency);
+    }
 }
 
 module.exports = TicketingSystem;

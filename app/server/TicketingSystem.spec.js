@@ -25,6 +25,7 @@ describe('Ticketing System module', () => {
 
     afterEach(() => {
         ticketingSystem.pauseReservation();
+        ticketingSystem.removeAllListeners();
     });
 
 
@@ -126,7 +127,7 @@ describe('Ticketing System module', () => {
     });
 
     it('should return valid inflight bookings when reservation system is started and paused', done => {
-        ticketingSystem = new TicketingSystem(20, 100);
+        ticketingSystem = new TicketingSystem(20, 50);
 
         for (let key of Array(10).keys()) {
             const booking = {
@@ -145,12 +146,12 @@ describe('Ticketing System module', () => {
         setTimeout(() => {
             expect(ticketingSystem.getUnProcessedBookings(), 7);
             expect(reservationEvent.callCount).eq(3);
-        }, 350);
+        }, 160);
 
         setTimeout(() => {
             expect(ticketingSystem.getUnProcessedBookings(), 2);
             expect(reservationEvent.callCount).eq(8);
-        }, 850);
+        }, 420);
 
         setTimeout(() => {
             expect(ticketingSystem.getUnProcessedBookings(), 0);
@@ -167,13 +168,13 @@ describe('Ticketing System module', () => {
             }
 
 
-        }, 1200);
+        }, 550);
 
         setTimeout(() => {
             expect(ticketingSystem.getUnProcessedBookings(), 5);
             expect(reservationEvent.callCount).eq(10);
             done();
-        }, 1620);
+        }, 1000);
 
     });
 
@@ -197,7 +198,7 @@ describe('Ticketing System module', () => {
         setTimeout(() => {
             expect(ticketingSystem.getUnProcessedBookings(), 7);
             expect(reservationEvent.callCount).eq(3);
-        }, 151);
+        }, 155);
 
         setTimeout(() => {
             ticketingSystem.changeFrequency(30);
@@ -211,7 +212,6 @@ describe('Ticketing System module', () => {
         setTimeout(() => {
             expect(ticketingSystem.getUnProcessedBookings(), 0);
             expect(reservationEvent.callCount).eq(10);
-            ticketingSystem.pauseReservation();
             done();
         }, 400);
 
