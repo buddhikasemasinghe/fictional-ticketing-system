@@ -8,28 +8,38 @@ const {uniqueNamesGenerator, countries, starWars} = require('unique-names-genera
 describe('Ticketing System module', () => {
 
     let configName;
+    let countryConfig;
+    let ticketingSystem;
 
     before(() => {
         configName = {
             dictionaries: [starWars]
-        }
+        };
+
+        countryConfig = {
+            dictionaries: [countries]
+        };
+
+
+    });
+
+    afterEach(() => {
+        ticketingSystem.pauseReservation();
     });
 
 
     it('should create ticket system with default capacity', () => {
-        const ticketingSystem = new TicketingSystem();
+        ticketingSystem = new TicketingSystem();
         expect(ticketingSystem.maxCapacity).eq(10);
-        ticketingSystem.pauseReservation();
     });
 
     it('should create ticket system with provided capacity', () => {
-        const ticketingSystem = new TicketingSystem(100);
+        ticketingSystem = new TicketingSystem(100);
         expect(ticketingSystem.maxCapacity).eq(100);
-        ticketingSystem.pauseReservation();
     });
 
     it('should create booking and emit event', (done) => {
-        const ticketingSystem = new TicketingSystem(20);
+        ticketingSystem = new TicketingSystem(20);
 
         const bookingEvent = sinon.spy();
         ticketingSystem.on(BookingEvents.ACCEPTED, bookingEvent);
@@ -45,14 +55,13 @@ describe('Ticketing System module', () => {
             const result = bookingEvent.getCall(0).args[0];
             expect(result.bookingId).not.eq(undefined);
             expect(result.bookingCreateTime).not.eq(undefined);
-            ticketingSystem.pauseReservation();
             done();
         }, 10);
 
     });
 
     it('should not accept booking after max capacity', (done) => {
-        const ticketingSystem = new TicketingSystem(3);
+        ticketingSystem = new TicketingSystem(3);
 
         const bookingEvent = sinon.spy();
         ticketingSystem.on(BookingEvents.ACCEPTED, bookingEvent);
@@ -60,9 +69,6 @@ describe('Ticketing System module', () => {
         const maxBookingNotification = sinon.spy();
         ticketingSystem.on(BookingEvents.MAX_BOOKING, maxBookingNotification);
 
-        const countryConfig = {
-            dictionaries: [countries]
-        }
 
         for (let key of Array(4).keys()) {
             const booking = {
@@ -83,14 +89,12 @@ describe('Ticketing System module', () => {
             const maxResult = bookingEvent.getCall(0).args[0];
             expect(maxBookingNotification.callCount).eq(1);
             expect(maxResult.name).not.eq(undefined);
-            ticketingSystem.pauseReservation();
             done();
         }, 10);
     });
 
     it('should start reservation process with the default interval and emit event', (done) => {
-        const ticketingSystem = new TicketingSystem();
-
+        ticketingSystem = new TicketingSystem();
         const bookingEvent = sinon.spy();
         ticketingSystem.on(BookingEvents.ACCEPTED, bookingEvent);
 
@@ -116,14 +120,13 @@ describe('Ticketing System module', () => {
             expect(reservationResult.reservedTime).not.eq(undefined);
             expect(reservationResult.name).eq('John Lenon');
             expect(reservationResult.reservationNo).not.eq(undefined);
-            ticketingSystem.pauseReservation();
             done();
         }, 350);
 
     });
 
     it('should return valid inflight bookings when reservation system is started and paused', done => {
-        const ticketingSystem = new TicketingSystem(20, 100);
+        ticketingSystem = new TicketingSystem(20, 100);
 
         for (let key of Array(10).keys()) {
             const booking = {
@@ -142,6 +145,8 @@ describe('Ticketing System module', () => {
         setTimeout(() => {
             expect(ticketingSystem.getUnProcessedBookings(), 7);
             expect(reservationEvent.callCount).eq(3);
+            ticketingSystem.pauseReservation();
+            done();
         }, 350);
 
     });

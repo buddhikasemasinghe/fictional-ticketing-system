@@ -34,7 +34,7 @@ class TicketingSystem extends EventEmitter {
         }
     }
 
-
+    
 }
 
 module.exports = TicketingSystem;
