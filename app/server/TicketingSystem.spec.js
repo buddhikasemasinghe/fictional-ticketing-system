@@ -122,4 +122,28 @@ describe('Ticketing System module', () => {
 
     });
 
+    it('should return valid inflight bookings when reservation system is started and paused', done => {
+        const ticketingSystem = new TicketingSystem(20, 100);
+
+        for (let key of Array(10).keys()) {
+            const booking = {
+                name: uniqueNamesGenerator(configName),
+                destination: uniqueNamesGenerator(countryConfig)
+            };
+
+            ticketingSystem.createBooking(booking);
+        }
+
+        expect(ticketingSystem.getUnProcessedBookings(), 10);
+
+        const reservationEvent = sinon.spy();
+        ticketingSystem.on(BookingEvents.RESERVATION_COMPLETED, reservationEvent);
+
+        setTimeout(() => {
+            expect(ticketingSystem.getUnProcessedBookings(), 7);
+            expect(reservationEvent.callCount).eq(3);
+        }, 350);
+
+    });
+
 });
