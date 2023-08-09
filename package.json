@@ -1,0 +1,32 @@
+{
+  "name": "fictional-ticketing-system",
+  "version": "1.0.0",
+  "description": "A ticketing system in NodeJS with event based architecture.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha app/**/**.spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/buddhikasemasinghe/fictional-ticketing-system.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/buddhikasemasinghe/fictional-ticketing-system/issues"
+  },
+  "homepage": "https://github.com/buddhikasemasinghe/fictional-ticketing-system#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^17.6.7",
+    "@commitlint/config-conventional": "^17.6.7",
+    "chai": "^4.3.7",
+    "husky": "^8.0.3",
+    "mocha": "^10.2.0",
+    "sinon": "^15.2.0",
+    "unique-names-generator": "^4.7.1"
+  },
+  "dependencies": {
+    "uuid": "^9.0.0"
+  }
+}
