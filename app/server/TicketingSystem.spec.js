@@ -39,8 +39,9 @@ describe('Ticketing System module', () => {
 
         setTimeout(() => {
             expect(bookingEvent.callCount).eq(1);
-            expect(bookingEvent.bookingId).not.eq(null);
-            expect(bookingEvent.bookingCreateTime).not.eq(null);
+            const result = bookingEvent.getCall(0).args[0];
+            expect(result.bookingId).not.eq(undefined);
+            expect(result.bookingCreateTime).not.eq(undefined);
             done();
         }, 10);
 
@@ -59,39 +60,58 @@ describe('Ticketing System module', () => {
             dictionaries: [countries]
         }
 
-        const booking1 = {
-            name: uniqueNamesGenerator(configName),
-            destination: uniqueNamesGenerator(countryConfig)
-        };
+        for (let key of Array(4).keys()) {
+            const booking = {
+                name: uniqueNamesGenerator(configName),
+                destination: uniqueNamesGenerator(countryConfig)
+            };
 
-        const booking2 = {
-            name: uniqueNamesGenerator(configName),
-            destination: uniqueNamesGenerator(countryConfig)
-        };
-
-        const booking3 = {
-            name: uniqueNamesGenerator(configName),
-            destination: uniqueNamesGenerator(countryConfig)
-        };
-
-        const booking4 = {
-            name: uniqueNamesGenerator(configName),
-            destination: uniqueNamesGenerator(countryConfig)
-        };
-
-        [booking1, booking2, booking3, booking4]
-            .forEach(booking=> ticketingSystem.createBooking(booking));
+            ticketingSystem.createBooking(booking)
+        }
 
 
         setTimeout(() => {
             expect(bookingEvent.callCount).eq(3);
-            expect(bookingEvent.bookingId).not.eq(null);
-            expect(bookingEvent.bookingCreateTime).not.eq(null);
+            const result = bookingEvent.getCall(2).args[0];
+            expect(result.bookingId).not.eq(undefined);
+            expect(result.bookingCreateTime).not.eq(undefined);
 
+            const maxResult = bookingEvent.getCall(0).args[0];
             expect(maxBookingNotification.callCount).eq(1);
-            expect(bookingEvent.name).not.eq(null);
+            expect(maxResult.name).not.eq(undefined);
             done();
         }, 10);
+    });
+
+    it('should start reservation process with the default interval and emit event', (done) => {
+        const ticketingSystem = new TicketingSystem();
+
+        const bookingEvent = sinon.spy();
+        ticketingSystem.on(BookingEvents.ACCEPTED, bookingEvent);
+
+        const booking = {
+            name: 'John Lenon',
+            destination: 'JFK'
+        }
+        ticketingSystem.createBooking(booking);
+
+        const reservationEvent = sinon.spy();
+        ticketingSystem.on(BookingEvents.RESERVATION_COMPLETED, reservationEvent);
+
+        setTimeout(() => {
+            expect(bookingEvent.callCount).eq(1);
+            const result = bookingEvent.getCall(0).args[0];
+            expect(result.bookingId).not.eq(undefined);
+            expect(result.name).eq('John Lenon');
+        }, 10);
+
+        setTimeout(() => {
+            expect(reservationEvent.callCount).eq(1);
+            expect(reservationEvent.reservedTime).not.eq(undefined);
+            expect(reservationEvent.name).eq('John Lenon');
+            done();
+        }, 350);
+
     });
 
 });
