@@ -145,9 +145,35 @@ describe('Ticketing System module', () => {
         setTimeout(() => {
             expect(ticketingSystem.getUnProcessedBookings(), 7);
             expect(reservationEvent.callCount).eq(3);
-            ticketingSystem.pauseReservation();
-            done();
         }, 350);
+
+        setTimeout(() => {
+            expect(ticketingSystem.getUnProcessedBookings(), 2);
+            expect(reservationEvent.callCount).eq(8);
+        }, 850);
+
+        setTimeout(() => {
+            expect(ticketingSystem.getUnProcessedBookings(), 0);
+            expect(reservationEvent.callCount).eq(10);
+            ticketingSystem.pauseReservation();
+
+            for (let key of Array(5).keys()) {
+                const booking = {
+                    name: uniqueNamesGenerator(configName),
+                    destination: uniqueNamesGenerator(countryConfig)
+                };
+
+                ticketingSystem.createBooking(booking);
+            }
+
+
+        }, 1200);
+
+        setTimeout(() => {
+            expect(ticketingSystem.getUnProcessedBookings(), 5);
+            expect(reservationEvent.callCount).eq(10);
+            done();
+        }, 1620);
 
     });
 

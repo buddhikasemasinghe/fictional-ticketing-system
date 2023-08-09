@@ -34,7 +34,10 @@ class TicketingSystem extends EventEmitter {
         }
     }
 
-    
+
+    getUnProcessedBookings() {
+        return this.bookingQueue.length;
+    }
 }
 
 module.exports = TicketingSystem;
