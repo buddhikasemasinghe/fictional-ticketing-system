@@ -15,14 +15,17 @@ describe('Ticketing System module', () => {
         }
     });
 
+
     it('should create ticket system with default capacity', () => {
         const ticketingSystem = new TicketingSystem();
         expect(ticketingSystem.maxCapacity).eq(10);
+        ticketingSystem.pauseReservation();
     });
 
     it('should create ticket system with provided capacity', () => {
         const ticketingSystem = new TicketingSystem(100);
         expect(ticketingSystem.maxCapacity).eq(100);
+        ticketingSystem.pauseReservation();
     });
 
     it('should create booking and emit event', (done) => {
@@ -42,6 +45,7 @@ describe('Ticketing System module', () => {
             const result = bookingEvent.getCall(0).args[0];
             expect(result.bookingId).not.eq(undefined);
             expect(result.bookingCreateTime).not.eq(undefined);
+            ticketingSystem.pauseReservation();
             done();
         }, 10);
 
@@ -79,6 +83,7 @@ describe('Ticketing System module', () => {
             const maxResult = bookingEvent.getCall(0).args[0];
             expect(maxBookingNotification.callCount).eq(1);
             expect(maxResult.name).not.eq(undefined);
+            ticketingSystem.pauseReservation();
             done();
         }, 10);
     });
@@ -111,6 +116,7 @@ describe('Ticketing System module', () => {
             expect(reservationResult.reservedTime).not.eq(undefined);
             expect(reservationResult.name).eq('John Lenon');
             expect(reservationResult.reservationNo).not.eq(undefined);
+            ticketingSystem.pauseReservation();
             done();
         }, 350);
 
